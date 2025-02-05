@@ -1,10 +1,9 @@
 import "./UserInfo.css";
-import { useContext } from "react";
-import { UserInfoContext } from "../userInfo/UserInfoProvider";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthToken, FakeData, User } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
+import useUserInfo from "./UserInfoHook";
 
 const UserInfo = () => {
   const [isFollower, setIsFollower] = useState(false);
@@ -15,8 +14,7 @@ const UserInfo = () => {
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
     useToastListener();
 
-  const { currentUser, authToken, displayedUser, setDisplayedUser } =
-    useContext(UserInfoContext);
+  const { currentUser, authToken, displayedUser, setDisplayedUser} = useUserInfo();
 
   if (!displayedUser) {
     setDisplayedUser(currentUser!);
