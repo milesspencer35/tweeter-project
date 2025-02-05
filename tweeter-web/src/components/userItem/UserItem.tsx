@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import useNavigationListener from "../mainLayout/NavigationListenerHook";
+import useUserNavigation from "../mainLayout/UserNavigationHook";
 import { User } from "tweeter-shared";
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 
 const UserItem = (props: Props) => {
 
-  const { navigateToClickedUser } = useNavigationListener();
+  const { navigateToClickedUser } = useUserNavigation();
 
   return (
     <div className="col bg-light mx-0 px-0">
