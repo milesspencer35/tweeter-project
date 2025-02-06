@@ -155,9 +155,12 @@ const Register = () => {
           />
           <label htmlFor="lastNameInput">Last Name</label>
         </div>
-        <AuthenticationFields doLogin={ doRegister }
-          alias={alias} setAlias={setAlias}
-          password={password} setPassword={setPassword}/>
+        <AuthenticationFields 
+          doLogin={ doRegister }
+          alias={alias} 
+          setAlias={setAlias}
+          password={password} 
+          setPassword={setPassword}/>
         <div className="form-floating mb-3">
           <input
             type="file"
