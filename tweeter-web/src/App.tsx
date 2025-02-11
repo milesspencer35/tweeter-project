@@ -17,6 +17,9 @@ import useUserInfo from "./components/userInfo/UserInfoHook";
 import { FolloweePresenter } from "./presenters/FolloweePresenter";
 import { UserItemView } from "./presenters/UserItemPresenter";
 import { FollowerPresenter } from "./presenters/FollowerPresenter";
+import { FeedItemPresenter } from "./presenters/FeedItemPresenter";
+import { StatusItemView } from "./presenters/StatusItemPresenter";
+import { StoryItemPresenter } from "./presenters/StoryItemPresenter";
 
 const App = () => {
     const { currentUser, authToken } = useUserInfo();
@@ -41,26 +44,6 @@ const App = () => {
 
 const AuthenticatedRoutes = () => {
 
-    const loadMoreFeedItems = async (
-        authToken: AuthToken,
-        userAlias: string,
-        pageSize: number,
-        lastItem: Status | null
-    ): Promise<[Status[], boolean]> => {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-    };
-
-    const loadMoreStoryItems = async (
-        authToken: AuthToken,
-        userAlias: string,
-        pageSize: number,
-        lastItem: Status | null
-    ): Promise<[Status[], boolean]> => {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-    };
-
     return (
         <Routes>
             <Route element={<MainLayout />}>
@@ -70,8 +53,7 @@ const AuthenticatedRoutes = () => {
                     element={
                         <StatusItemScroller
                             key={"FeedScroller"}
-                            feedType="feed"
-                            loadMoreStatusItems={loadMoreFeedItems}
+                            presenterGenerator={(view: StatusItemView) => new FeedItemPresenter(view)}
                         />
                     }
                 />
@@ -80,8 +62,7 @@ const AuthenticatedRoutes = () => {
                     element={
                         <StatusItemScroller
                             key={"StoryScroller"}
-                            feedType="story"
-                            loadMoreStatusItems={loadMoreStoryItems}
+                            presenterGenerator={(view: StatusItemView) => new StoryItemPresenter(view)}
                         />
                     }
                 />
