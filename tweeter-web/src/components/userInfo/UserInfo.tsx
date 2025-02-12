@@ -7,6 +7,11 @@ import { UserInfoPresenter, UserInfoView } from "../../presenters/UserInfoPresen
 
 const UserInfo = () => {
 
+  const [isFollower, setIsFollower] = useState(false);
+  const [followeeCount, setFolloweeCount] = useState(-1);
+  const [followerCount, setFollowerCount] = useState(-1);
+  const [isLoading, setIsLoading] = useState(false);
+
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
     useToastListener();
 
@@ -46,13 +51,17 @@ const UserInfo = () => {
   const listener: UserInfoView = {
     displayErrorMessage: displayErrorMessage,
     displayInfoMessage: displayInfoMessage,
-    clearLastInfoMessage: clearLastInfoMessage
+    clearLastInfoMessage: clearLastInfoMessage,
+    setIsFollower: setIsFollower,
+    setFolloweeCount: setFolloweeCount,
+    setFollowerCount: setFollowerCount,
+    setIsLoading: setIsLoading
   }
 
   const [presenter] = useState(new UserInfoPresenter(listener));
 
   return (
-    <div className={presenter.isLoading ? "loading" : ""}>
+    <div className={isLoading ? "loading" : ""}>
       {currentUser === null || displayedUser === null || authToken === null ? (
         <></>
       ) : (
@@ -83,16 +92,16 @@ const UserInfo = () => {
               </h2>
               <h3>{displayedUser.alias}</h3>
               <br />
-              {presenter.followeeCount > -1 && presenter.followerCount > -1 && (
+              {followeeCount > -1 && followerCount > -1 && (
                 <div>
-                  Followees: {presenter.followeeCount} Followers: {presenter.followerCount}
+                  Followees: {followeeCount} Followers: {followerCount}
                 </div>
               )}
             </div>
             <form>
               {displayedUser !== currentUser && (
                 <div className="form-group">
-                  {presenter.isFollower ? (
+                  {isFollower ? (
                     <button
                       id="unFollowButton"
                       className="btn btn-md btn-secondary me-1"
@@ -100,7 +109,7 @@ const UserInfo = () => {
                       style={{ width: "6em" }}
                       onClick={(event) => unfollowDisplayedUser(event)}
                     >
-                      {presenter.isLoading ? (
+                      {isLoading ? (
                         <span
                           className="spinner-border spinner-border-sm"
                           role="status"
@@ -118,7 +127,7 @@ const UserInfo = () => {
                       style={{ width: "6em" }}
                       onClick={(event) => followDisplayedUser(event)}
                     >
-                      {presenter.isLoading ? (
+                      {isLoading ? (
                         <span
                           className="spinner-border spinner-border-sm"
                           role="status"
