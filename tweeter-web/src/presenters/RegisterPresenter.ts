@@ -2,9 +2,10 @@ import { User, AuthToken } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 import { NavigateFunction } from "react-router-dom";
 import { Buffer } from "buffer";
+import { Presenter, View } from "./Presenter";
+import { LoadingPresenter } from "./LoadingPresenter";
 
-export interface RegisterView {
-    displayErrorMessage: (message: string) => void;
+export interface RegisterView extends View {
     updateUserInfo: (
         currentUser: User,
         displayedUser: User | null,
@@ -18,13 +19,12 @@ export interface RegisterView {
     setImageFileExtension: (value: string) => void;
 }
 
-export class RegisterPresenter {
+export class RegisterPresenter extends LoadingPresenter<RegisterView> {
     private userService: UserService;
-    private view: RegisterView;
 
     public constructor(view: RegisterView) {
+        super(view);
         this.userService = new UserService();
-        this.view = view;
     }
 
     public async doRegister(
@@ -36,7 +36,8 @@ export class RegisterPresenter {
         imageFileExtension: string,
         rememberMe: boolean
     ) {
-        try {
+
+        this.doFailureReportWithFinally(async () => {
             this.view.setIsLoading(true);
 
             const [user, authToken] = await this.userService.register(
@@ -55,13 +56,7 @@ export class RegisterPresenter {
                 rememberMe
             );
             this.view.navigate("/");
-        } catch (error) {
-            this.view.displayErrorMessage(
-                `Failed to register user because of exception: ${error}`
-            );
-        } finally {
-            this.view.setIsLoading(false);
-        }
+        }, "register user", () => {});
     }
 
     public getFileExtension(file: File): string | undefined {

@@ -1,9 +1,9 @@
 import { AuthToken, User } from "tweeter-shared";
-import { UserItemPresenter, UserItemView } from "./UserItemPresenter";
+import { UserItemPresenter } from "./UserItemPresenter";
 import { PAGE_SIZE } from "./PagedItemPresenter";
 
 export class FollowerPresenter extends UserItemPresenter {
-    
+
     protected getMoreItems(
         authToken: AuthToken,
         userAlias: string
