@@ -1,7 +1,6 @@
 import { To, NavigateOptions } from "react-router-dom";
 import { User, AuthToken } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
-import { Presenter, View } from "./Presenter";
 import { LoadingPresenter, LoadingView } from "./LoadingPresenter";
 
 export interface LoginView extends LoadingView {
@@ -12,7 +11,6 @@ export interface LoginView extends LoadingView {
         remember: boolean
     ) => void;
     navigate: (to: To, options?: NavigateOptions) => void;
-    // setIsLoading: (value: boolean) => void;
 }
 
 export class LoginPresenter extends LoadingPresenter<LoginView> {

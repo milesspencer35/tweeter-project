@@ -2,10 +2,9 @@ import { User, AuthToken } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 import { NavigateFunction } from "react-router-dom";
 import { Buffer } from "buffer";
-import { Presenter, View } from "./Presenter";
-import { LoadingPresenter } from "./LoadingPresenter";
+import { LoadingPresenter, LoadingView } from "./LoadingPresenter";
 
-export interface RegisterView extends View {
+export interface RegisterView extends LoadingView {
     updateUserInfo: (
         currentUser: User,
         displayedUser: User | null,
@@ -13,7 +12,6 @@ export interface RegisterView extends View {
         remember: boolean
     ) => void;
     navigate: NavigateFunction;
-    setIsLoading: (value: boolean) => void;
     setImageBytes: (value: Uint8Array) => void;
     setImageUrl: (value: string) => void;
     setImageFileExtension: (value: string) => void;

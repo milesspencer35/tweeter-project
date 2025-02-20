@@ -1,6 +1,6 @@
-import { Presenter, View} from "./Presenter";
+import { MessageView, Presenter } from "./Presenter";
 
-export interface LoadingView extends View {
+export interface LoadingView extends MessageView {
     setIsLoading: (value: boolean) => void;
 }
 
