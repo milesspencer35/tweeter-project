@@ -3,26 +3,18 @@ import { UserService } from "../model/service/UserService";
 import { NavigateFunction } from "react-router-dom";
 import { Buffer } from "buffer";
 import { LoadingPresenter, LoadingView } from "./LoadingPresenter";
+import { AuthenticateUserPresenter, AuthenticateUserView } from "./AuthenticateUserPresenter";
 
-export interface RegisterView extends LoadingView {
-    updateUserInfo: (
-        currentUser: User,
-        displayedUser: User | null,
-        authToken: AuthToken,
-        remember: boolean
-    ) => void;
-    navigate: NavigateFunction;
+export interface RegisterView extends AuthenticateUserView {
     setImageBytes: (value: Uint8Array) => void;
     setImageUrl: (value: string) => void;
     setImageFileExtension: (value: string) => void;
 }
 
-export class RegisterPresenter extends LoadingPresenter<RegisterView> {
-    private userService: UserService;
+export class RegisterPresenter extends AuthenticateUserPresenter<RegisterView> {
 
     public constructor(view: RegisterView) {
         super(view);
-        this.userService = new UserService();
     }
 
     public async doRegister(
@@ -34,27 +26,20 @@ export class RegisterPresenter extends LoadingPresenter<RegisterView> {
         imageFileExtension: string,
         rememberMe: boolean
     ) {
-
-        this.doFailureReportWithFinally(async () => {
-            this.view.setIsLoading(true);
-
-            const [user, authToken] = await this.userService.register(
-                firstName,
-                lastName,
-                alias,
-                password,
-                imageBytes,
-                imageFileExtension
-            );
-
-            this.view.updateUserInfo(
-                user,
-                user,
-                authToken,
-                rememberMe
-            );
-            this.view.navigate("/");
-        }, "register user", () => {});
+        this.doAuthentication(
+            () =>
+                this.userService.register(
+                    firstName,
+                    lastName,
+                    alias,
+                    password,
+                    imageBytes,
+                    imageFileExtension
+                ),
+            () => this.view.navigate("/"),
+            rememberMe,
+            "register user"
+        );
     }
 
     public getFileExtension(file: File): string | undefined {
