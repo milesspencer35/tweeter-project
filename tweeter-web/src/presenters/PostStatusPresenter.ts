@@ -31,10 +31,7 @@ export class PostStatusPresenter extends LoadingPresenter<PostStatusView> {
                 this.view.setPost("");
                 this.view.displayInfoMessage("Status posted!", 2000);
             },
-            "post the status",
-            () => {
-                this.view.clearLastInfoMessage();
-            }
+            "post the status"
         );
     }
 }

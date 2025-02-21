@@ -10,10 +10,10 @@ export class LoadingPresenter<LV extends LoadingView> extends Presenter<LV> {
         super(view);
     }
 
-    public doFailureReportWithFinally(operation: () => Promise<void>, operationDescription: string, operationFinally: () => void) {
+    public doFailureReportWithFinally(operation: () => Promise<void>, operationDescription: string) {
         this.doFailureReportingOperation(operation, operationDescription).finally(() => {
-            operationFinally();
-            this.view.setIsLoading(false);
+            this.view.clearLastInfoMessage();
+            this.view.setIsLoading(false); 
         });
     }
 }
