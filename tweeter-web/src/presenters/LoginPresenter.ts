@@ -1,7 +1,3 @@
-import { To, NavigateOptions } from "react-router-dom";
-import { User, AuthToken } from "tweeter-shared";
-import { UserService } from "../model/service/UserService";
-import { LoadingPresenter, LoadingView } from "./LoadingPresenter";
 import { AuthenticateUserPresenter, AuthenticateUserView } from "./AuthenticateUserPresenter";
 
 export class LoginPresenter extends AuthenticateUserPresenter<AuthenticateUserView> {

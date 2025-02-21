@@ -1,8 +1,4 @@
-import { User, AuthToken } from "tweeter-shared";
-import { UserService } from "../model/service/UserService";
-import { NavigateFunction } from "react-router-dom";
 import { Buffer } from "buffer";
-import { LoadingPresenter, LoadingView } from "./LoadingPresenter";
 import { AuthenticateUserPresenter, AuthenticateUserView } from "./AuthenticateUserPresenter";
 
 export interface RegisterView extends AuthenticateUserView {
