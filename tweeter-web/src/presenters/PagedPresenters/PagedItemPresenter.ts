@@ -1,5 +1,5 @@
 import { AuthToken } from "tweeter-shared";
-import { Presenter, View } from "./Presenter";
+import { Presenter, View } from "../Presenter";
 
 export interface PagedItemView<T> extends View {
     addItems: (newItems: T[]) => void;

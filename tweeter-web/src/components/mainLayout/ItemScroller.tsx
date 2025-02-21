@@ -5,7 +5,7 @@ import useUserInfo from "../userInfo/UserInfoHook";
 import {
     PagedItemPresenter,
     PagedItemView,
-} from "../../presenters/PagedItemPresenter";
+} from "../../presenters/PagedPresenters/PagedItemPresenter";
 
 export const PAGE_SIZE = 10;
 
