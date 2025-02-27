@@ -11,6 +11,7 @@ import { AuthenticateUserView } from "../../../presenters/AuthenticateUserPresen
 
 interface Props {
   originalUrl?: string;
+  presenter?: LoginPresenter;
 }
 
 const Login = (props: Props) => {
@@ -34,7 +35,7 @@ const Login = (props: Props) => {
     setIsLoading
   }
 
-  const [presenter] = useState(new LoginPresenter(listener));
+  const [presenter] = useState(props.presenter ?? new LoginPresenter(listener));
 
 
   const doLogin = () => {
