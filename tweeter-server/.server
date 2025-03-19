@@ -2,5 +2,6 @@ BUCKET='tweeter-mspencer'
 LAMBDA_ROLE='arn:aws:iam::062781275972:role/tweeter-lambda'
 EDIT_LAMBDALIST='
 tweeterGetFollowees | lambda/follow/GetFolloweesLambda.handler
+tweeterGetFollowers | lambda/follow/GetFollowersLambda.handler
 '
-LAMBDALAYER_ARN='arn:aws:lambda:us-east-1:062781275972:layer:tweeterLambdaLayer:3'
+LAMBDALAYER_ARN='arn:aws:lambda:us-east-1:062781275972:layer:tweeterLambdaLayer:4'
