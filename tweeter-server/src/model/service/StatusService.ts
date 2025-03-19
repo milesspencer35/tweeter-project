@@ -8,19 +8,16 @@ export class StatusService {
         pageSize: number,
         lastItem: StatusDto | null
     ): Promise<[StatusDto[], boolean]> {
-        // TODO: Replace with the result of calling server
-        // return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
         return this.getFakeData(lastItem, pageSize);
     }
 
     public async loadMoreStoryItems(
-        authToken: AuthToken,
+        token: string,
         userAlias: string,
         pageSize: number,
-        lastItem: Status | null
-    ): Promise<[Status[], boolean]> {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+        lastItem: StatusDto | null
+    ): Promise<[StatusDto[], boolean]> {
+        return this.getFakeData(lastItem, pageSize);
     }
 
     private async getFakeData(lastItem: StatusDto | null, pageSize: number): Promise<[StatusDto[], boolean]> {
