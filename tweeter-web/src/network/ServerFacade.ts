@@ -1,4 +1,6 @@
 import {
+	FollowCountRequest,
+	FollowCountResponse,
 	IsFollowerRequest,
     IsFollowerResponse,
     PagedUserItemRequest,
@@ -97,6 +99,20 @@ export class ServerFacade {
 
 		if (response.success) {
 			return response.isFollower
+		} else {
+			console.error(response);
+			throw new Error(response.message ?? undefined);
+		}
+	}
+
+	public async followeeCount(request: FollowCountRequest): Promise<number> {
+		const response = await this.clientCommunicator.doPost<
+			FollowCountRequest,
+			FollowCountResponse
+		>(request, "/followee/count");
+
+		if (response.success) {
+			return response.followCount;
 		} else {
 			console.error(response);
 			throw new Error(response.message ?? undefined);

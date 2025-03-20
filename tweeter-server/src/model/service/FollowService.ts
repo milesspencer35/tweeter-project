@@ -36,15 +36,15 @@ export class FollowService {
         return FakeData.instance.isFollower();
     }
 
-    //////// NOT IMPLEMENTED YET JUST COPIED //////////
+    public async getFolloweeCount(
+        token: string,
+        user: UserDto
+    ): Promise<number> {
+        // TODO: Replace with the result of calling server
+        return FakeData.instance.getFolloweeCount(user.alias);
+    }
 
-    // public async getFolloweeCount(
-    //     authToken: AuthToken,
-    //     user: User
-    // ): Promise<number> {
-    //     // TODO: Replace with the result of calling server
-    //     return FakeData.instance.getFolloweeCount(user.alias);
-    // }
+     //////// NOT IMPLEMENTED YET JUST COPIED //////////
 
     // public async getFollowerCount(
     //     authToken: AuthToken,
