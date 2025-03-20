@@ -23,6 +23,7 @@ export type { PostSegmentDto } from "./model/dto/PostSegmentDto";
 //
 export type { TweeterRequest } from "./model/net/request/TweeterRequest";
 export type { PagedUserItemRequest } from "./model/net/request/PagedUserItemRequest";
+export type { PostStatusRequest } from "./model/net/request/PostStatusRequest";
 
 //
 // Responses

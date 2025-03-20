@@ -1,8 +1,10 @@
 import {
     PagedUserItemRequest,
     PagedUserItemResponse,
+    PostStatusRequest,
     Status,
     StatusDto,
+    TweeterResponse,
     User,
     UserDto,
 } from "tweeter-shared";
@@ -72,4 +74,17 @@ export class ServerFacade {
             throw new Error(response.message ?? undefined);
         }
     }
+
+
+	public async postStatus(request: PostStatusRequest): Promise<void> {
+		const response = await this.clientCommunicator.doPost<
+			PostStatusRequest,
+			TweeterResponse
+		>(request, "/status/post");
+
+		if (!response.success) {
+			console.error(response);
+			throw new Error(response.message ?? undefined);
+		}
+	}
 }
