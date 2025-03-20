@@ -37,7 +37,6 @@ export class FollowService {
         };
 
         const response = await this.serverFacade.getMoreFollowers(request);
-
         return response;
     }
 
@@ -46,8 +45,15 @@ export class FollowService {
         user: User,
         selectedUser: User
     ): Promise<boolean> {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.isFollower();
+
+        const request = {
+            token: authToken.token,
+            user: user.dto,
+            selectedUser: selectedUser.dto
+        }
+
+        const response = await this.serverFacade.isFollower(request);
+        return response;
     }
 
     public async getFolloweeCount(

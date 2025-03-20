@@ -27,16 +27,16 @@ export class FollowService {
         return [dtos, hasMore];
     }
 
-    //////// NOT IMPLEMENTED YET JUST COPIED //////////
+    public async getIsFollowerStatus(
+        token: string,
+        user: UserDto,
+        selectedUser: UserDto
+    ): Promise<boolean> {
+        // TODO: Replace with the result of calling server
+        return FakeData.instance.isFollower();
+    }
 
-    // public async getIsFollowerStatus(
-    //     authToken: AuthToken,
-    //     user: User,
-    //     selectedUser: User
-    // ): Promise<boolean> {
-    //     // TODO: Replace with the result of calling server
-    //     return FakeData.instance.isFollower();
-    // }
+    //////// NOT IMPLEMENTED YET JUST COPIED //////////
 
     // public async getFolloweeCount(
     //     authToken: AuthToken,

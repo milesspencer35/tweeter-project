@@ -1,4 +1,6 @@
 import {
+	IsFollowerRequest,
+    IsFollowerResponse,
     PagedUserItemRequest,
     PagedUserItemResponse,
     PostStatusRequest,
@@ -75,7 +77,6 @@ export class ServerFacade {
         }
     }
 
-
 	public async postStatus(request: PostStatusRequest): Promise<void> {
 		const response = await this.clientCommunicator.doPost<
 			PostStatusRequest,
@@ -83,6 +84,20 @@ export class ServerFacade {
 		>(request, "/status/post");
 
 		if (!response.success) {
+			console.error(response);
+			throw new Error(response.message ?? undefined);
+		}
+	}
+
+	public async isFollower(request: IsFollowerRequest): Promise<boolean> {
+		const response = await this.clientCommunicator.doPost<
+			IsFollowerRequest,
+			IsFollowerResponse
+		>(request, "/follower/isfollower");
+
+		if (response.success) {
+			return response.isFollower
+		} else {
 			console.error(response);
 			throw new Error(response.message ?? undefined);
 		}
