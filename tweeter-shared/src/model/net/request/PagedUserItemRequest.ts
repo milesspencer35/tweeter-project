@@ -1,7 +1,6 @@
-import { UserDto } from "../../dto/UserDto";
-import { TweeterResponse } from "../response/TweeterResponse";
+import { TweeterRequest } from "./TweeterRequest";
 
-export interface PagedUserItemRequest<T> extends TweeterResponse{
+export interface PagedUserItemRequest<T> extends TweeterRequest{
     readonly token: string,
     readonly userAlias: string,
     readonly pageSize: number,
