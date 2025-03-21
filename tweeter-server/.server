@@ -9,5 +9,6 @@ tweeterPostStatus | lambda/status/PostStatusLambda.handler
 tweeterIsFollower | lambda/follow/GetIsFollowerLambda.handler
 tweeterFolloweeCount | lambda/follow/GetFolloweeCountLambda.handler
 tweeterFollowerCount | lambda/follow/GetFollowerCountLambda.handler
+tweeterFollow | lambda/follow/FollowUserLambda.handler
 '
-LAMBDALAYER_ARN='arn:aws:lambda:us-east-1:062781275972:layer:tweeterLambdaLayer:12'
+LAMBDALAYER_ARN='arn:aws:lambda:us-east-1:062781275972:layer:tweeterLambdaLayer:13'
