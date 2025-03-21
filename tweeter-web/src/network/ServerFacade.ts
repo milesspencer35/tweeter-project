@@ -3,6 +3,8 @@ import {
 	FollowActionResponse,
 	FollowCountRequest,
 	FollowCountResponse,
+	GetUserRequest,
+	GetUserResponse,
 	IsFollowerRequest,
     IsFollowerResponse,
     PagedUserItemRequest,
@@ -136,6 +138,16 @@ export class ServerFacade {
 		>(request, "/action/unfollow");
 
 		return this.responseDecision<[number, number]>(response, [response.followerCount, response.followeeCount])
+	}
+
+	public async getUser(request: GetUserRequest): Promise<User | null> {
+		const response = await this.clientCommunicator.doPost<
+			GetUserRequest,
+			GetUserResponse
+		>(request, "/user/get");
+
+		const returnVal = response == null ? null : User.fromDto(response.user);
+		return this.responseDecision<User | null>(response, returnVal);
 	}
 
 	private responseDecision<T>(response: TweeterResponse, returnValue: T): T {
