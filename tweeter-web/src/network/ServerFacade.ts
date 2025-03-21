@@ -126,7 +126,16 @@ export class ServerFacade {
 			FollowActionResponse
 		>(request, "/action/follow");
 
-		return this.responseDecision<[number, number]>(response, [response.followeeCount, response.followerCount]);
+		return this.responseDecision<[number, number]>(response, [response.followerCount, response.followeeCount]);
+	}
+
+	public async unfollow(request: FollowActionRequest): Promise<[number, number]> {
+		const response = await this.clientCommunicator.doPost<
+			FollowActionRequest,
+			FollowActionResponse
+		>(request, "/action/unfollow");
+
+		return this.responseDecision<[number, number]>(response, [response.followerCount, response.followeeCount])
 	}
 
 	private responseDecision<T>(response: TweeterResponse, returnValue: T): T {
