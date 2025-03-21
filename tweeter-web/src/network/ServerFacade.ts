@@ -78,7 +78,7 @@ export class ServerFacade {
         } else {
             console.error(response);
             throw new Error(response.message ?? undefined);
-        }
+        }		
     }
 
 	public async postStatus(request: PostStatusRequest): Promise<void> {
@@ -99,12 +99,7 @@ export class ServerFacade {
 			IsFollowerResponse
 		>(request, "/follower/isfollower");
 
-		if (response.success) {
-			return response.isFollower
-		} else {
-			console.error(response);
-			throw new Error(response.message ?? undefined);
-		}
+		return this.responseDecision<boolean>(response, response.isFollower);
 	}
 
 	public async followeeCount(request: FollowCountRequest): Promise<number> {
@@ -113,12 +108,7 @@ export class ServerFacade {
 			FollowCountResponse
 		>(request, "/followee/count");
 
-		if (response.success) {
-			return response.followCount;
-		} else {
-			console.error(response);
-			throw new Error(response.message ?? undefined);
-		}
+		return this.responseDecision<number>(response, response.followCount);
 	}
 
 	public async followerCount (request: FollowCountRequest): Promise<number> {
@@ -127,12 +117,7 @@ export class ServerFacade {
 			FollowCountResponse
 		>(request, "/follower/count");
 
-		if(response.success) {
-			return response.followCount;
-		} else {
-			console.error(response);
-			throw new Error(response.message ?? undefined);
-		}
+		return this.responseDecision<number>(response, response.followCount);
 	}
 
 	public async follow(request: FollowActionRequest): Promise<[number, number]> {
@@ -141,8 +126,12 @@ export class ServerFacade {
 			FollowActionResponse
 		>(request, "/action/follow");
 
-		if(response.success) {
-			return [response.followerCount, response.followeeCount];
+		return this.responseDecision<[number, number]>(response, [response.followeeCount, response.followerCount]);
+	}
+
+	private responseDecision<T>(response: TweeterResponse, returnValue: T): T {
+		if (response.success) {
+			return returnValue
 		} else {
 			console.error(response);
 			throw new Error(response.message ?? undefined);
