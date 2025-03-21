@@ -46,7 +46,7 @@ export class UserService {
         if (user === null) {
             throw new Error("Invalid registration");
         }
-        
+
         return [user, authToken];
     }
 
@@ -54,14 +54,19 @@ export class UserService {
         alias: string,
         password: string
     ): Promise<[User, AuthToken]> {
-        // TODO: Replace with the result of calling the server
-        const user = FakeData.instance.firstUser;
+
+        const request = {
+            alias: alias,
+            password: password
+        }
+
+        const [user, authToken] = await this.serverFacade.login(request);
 
         if (user === null) {
             throw new Error("Invalid alias or password");
         }
 
-        return [user, FakeData.instance.authToken];
+        return [user, authToken];
     }
 
     public async logout(authToken: AuthToken): Promise<void> {

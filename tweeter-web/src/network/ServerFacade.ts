@@ -18,6 +18,7 @@ import {
     TweeterResponse,
     User,
     UserDto,
+	LoginRequest,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
@@ -159,6 +160,24 @@ export class ServerFacade {
 			EntryResponse
 		>(request, "/user/register");
 
+		return this.entry(response);
+
+		// const user = response.user == null ? null : User.fromDto(response.user);
+		// const authToken = AuthToken.fromDto(response.authToken);
+
+		// return this.responseDecision<[User | null, AuthToken]>(response, [user, authToken]);
+	}
+
+	public async login(request: LoginRequest): Promise<[User | null, AuthToken]> {
+		const response = await this.clientCommunicator.doPost<
+			LoginRequest,
+			EntryResponse
+		>(request, "/user/login");
+
+		return this.entry(response);
+	}
+
+	private entry(response: EntryResponse) {
 		const user = response.user == null ? null : User.fromDto(response.user);
 		const authToken = AuthToken.fromDto(response.authToken);
 
