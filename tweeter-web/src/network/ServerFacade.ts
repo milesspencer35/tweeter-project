@@ -12,7 +12,7 @@ import {
     PagedUserItemResponse,
     PostStatusRequest,
     RegisterRequest,
-    RegisterResponse,
+    EntryResponse,
     Status,
     StatusDto,
     TweeterResponse,
@@ -156,7 +156,7 @@ export class ServerFacade {
 	public async register(request: RegisterRequest): Promise<[User | null, AuthToken]> {
 		const response = await this.clientCommunicator.doPost<
 			RegisterRequest,
-			RegisterResponse
+			EntryResponse
 		>(request, "/user/register");
 
 		const user = response.user == null ? null : User.fromDto(response.user);

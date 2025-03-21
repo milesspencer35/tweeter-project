@@ -1,9 +1,9 @@
-import { RegisterRequest, RegisterResponse } from "tweeter-shared";
+import { EntryResponse, RegisterRequest } from "tweeter-shared";
 import { UserService } from "../../model/service/UserService";
 
 export const handler = async (
     request: RegisterRequest
-): Promise<RegisterResponse> => {
+): Promise<EntryResponse> => {
     const userService = new UserService();
     const [user, authToken] = await userService.register(
         request.firstName,
