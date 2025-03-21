@@ -1,4 +1,5 @@
 import {
+	AuthToken,
 	FollowActionRequest,
 	FollowActionResponse,
 	FollowCountRequest,
@@ -10,6 +11,8 @@ import {
     PagedUserItemRequest,
     PagedUserItemResponse,
     PostStatusRequest,
+    RegisterRequest,
+    RegisterResponse,
     Status,
     StatusDto,
     TweeterResponse,
@@ -148,6 +151,18 @@ export class ServerFacade {
 
 		const returnVal = response == null ? null : User.fromDto(response.user);
 		return this.responseDecision<User | null>(response, returnVal);
+	}
+
+	public async register(request: RegisterRequest): Promise<[User | null, AuthToken]> {
+		const response = await this.clientCommunicator.doPost<
+			RegisterRequest,
+			RegisterResponse
+		>(request, "/user/register");
+
+		const user = response.user == null ? null : User.fromDto(response.user);
+		const authToken = AuthToken.fromDto(response.authToken);
+
+		return this.responseDecision<[User | null, AuthToken]>(response, [user, authToken]);
 	}
 
 	private responseDecision<T>(response: TweeterResponse, returnValue: T): T {

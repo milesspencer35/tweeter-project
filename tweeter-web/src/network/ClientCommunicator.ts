@@ -1,4 +1,4 @@
-import { TweeterRequest, TweeterResponse } from "tweeter-shared";
+import { RegisterRequest, TweeterRequest, TweeterResponse } from "tweeter-shared";
 
 export class ClientCommunicator {
   private SERVER_URL: string;
@@ -7,7 +7,7 @@ export class ClientCommunicator {
     this.SERVER_URL = SERVER_URL;
   }
 
-  public async doPost<REQ extends TweeterRequest, RES extends TweeterResponse>(
+  public async doPost<REQ extends TweeterRequest | RegisterRequest, RES extends TweeterResponse>(
     req: REQ | undefined,
     endpoint: string,
     headers?: Headers

@@ -32,14 +32,22 @@ export class UserService {
         const imageStringBase64: string =
             Buffer.from(userImageBytes).toString("base64");
 
-        // TODO: Replace with the result of calling the server
-        const user = FakeData.instance.firstUser;
+        const request = {
+            firstName: firstName, 
+            lastName: lastName,
+            alias: alias,
+            password: password,
+            userImageString: imageStringBase64,
+            imageFileExtension: imageFileExtension
+        }
+
+        const [user, authToken]= await this.serverFacade.register(request);
 
         if (user === null) {
             throw new Error("Invalid registration");
         }
-
-        return [user, FakeData.instance.authToken];
+        
+        return [user, authToken];
     }
 
     public async login(
