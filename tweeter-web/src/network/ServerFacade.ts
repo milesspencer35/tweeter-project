@@ -118,4 +118,18 @@ export class ServerFacade {
 			throw new Error(response.message ?? undefined);
 		}
 	}
+
+	public async followerCount (request: FollowCountRequest): Promise<number> {
+		const response = await this.clientCommunicator.doPost<
+			FollowCountRequest,
+			FollowCountResponse
+		>(request, "/follower/count");
+
+		if(response.success) {
+			return response.followCount;
+		} else {
+			console.error(response);
+			throw new Error(response.message ?? undefined);
+		}
+	}
 }
