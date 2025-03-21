@@ -19,6 +19,7 @@ import {
     User,
     UserDto,
 	LoginRequest,
+	TweeterRequest,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
@@ -154,6 +155,18 @@ export class ServerFacade {
 		return this.responseDecision<User | null>(response, returnVal);
 	}
 
+	public async logout(request: TweeterRequest): Promise<void> {
+		const response = await this.clientCommunicator.doPost<
+			TweeterRequest,
+			TweeterResponse
+		>(request, "/user/logout");
+
+		if (!response.success) {
+			console.error(response);
+			throw new Error(response.message ?? undefined);
+		}
+	}
+
 	public async register(request: RegisterRequest): Promise<[User | null, AuthToken]> {
 		const response = await this.clientCommunicator.doPost<
 			RegisterRequest,
@@ -161,11 +174,6 @@ export class ServerFacade {
 		>(request, "/user/register");
 
 		return this.entry(response);
-
-		// const user = response.user == null ? null : User.fromDto(response.user);
-		// const authToken = AuthToken.fromDto(response.authToken);
-
-		// return this.responseDecision<[User | null, AuthToken]>(response, [user, authToken]);
 	}
 
 	public async login(request: LoginRequest): Promise<[User | null, AuthToken]> {
