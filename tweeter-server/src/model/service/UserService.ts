@@ -29,9 +29,23 @@ export class UserService extends TweeterService{
         imageFileExtension: string
     ): Promise<[User, AuthToken]> {
 
-        
+        try {
+            // upload image to s3
+            const imageURL = await this.s3Dao.putImage(`${alias}.${imageFileExtension}`, userImageString);
 
-        return await this.entryReturnLogic();
+            // create the user
+            const user = await this.userDao.register(firstName, lastName, alias, password, imageURL);
+
+            const authToken = await AuthToken.Generate()
+            await this.authTokenDao.putAuthToken(authToken);
+
+            return [user, authToken];
+
+        } catch (error) {
+            throw new Error('error registering user: ' + error);
+        }
+
+        // return await this.entryReturnLogic();
     }
 
     public async login(
