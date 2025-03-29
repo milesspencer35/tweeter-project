@@ -12,6 +12,10 @@ export class UserService extends TweeterService{
         token: string,
         alias: string
     ): Promise<User | null> {
+
+        // check token
+        // return user object
+
         // TODO: Replace with the result of calling server
         return FakeData.instance.findUserByAlias(alias);
     }
@@ -24,6 +28,8 @@ export class UserService extends TweeterService{
         userImageString: string,
         imageFileExtension: string
     ): Promise<[User, AuthToken]> {
+
+        
 
         return await this.entryReturnLogic();
     }
