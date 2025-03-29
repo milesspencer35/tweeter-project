@@ -14,8 +14,9 @@ export class FollowService extends TweeterService{
         pageSize: number,
         lastItem: UserDto | null
     ): Promise<[UserDto[], boolean]> {
-        // return this.getFakeData(lastItem, pageSize, userAlias);
-        return this.followDao.loadMoreFollowers(token, userAlias, pageSize, User.fromDto(lastItem));
+        return this.getFakeData(lastItem, pageSize, userAlias);
+        // const [userObjs, hasMore] = this.followDao.loadMoreFollowers(token, userAlias, pageSize, User.fromDto(lastItem));
+        // return this.mapDtos(userObjs, hasMore);
     }
 
     public async loadMoreFollowees(
@@ -26,6 +27,13 @@ export class FollowService extends TweeterService{
     ): Promise<[UserDto[], boolean]> {
         // TODO: Replace with the result of calling server
         return this.getFakeData(lastItem, pageSize, userAlias);
+        // const [userObjs, hasMore] = this.followDao.loadMoreFollowees(token, userAlias, pageSize, User.fromDto(lastItem));
+        // return this.mapDtos(userObjs, hasMore);
+    }
+
+    private mapDtos(items: User[], hasMore: boolean): [UserDto[], boolean] {
+        const dtos = items.map((user) => user.dto);
+        return [dtos, hasMore];
     }
 
     private async getFakeData(lastItem: UserDto | null, pageSize: number, userAlias: string): Promise<[UserDto[], boolean]> {

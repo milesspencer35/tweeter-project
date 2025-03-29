@@ -1,9 +1,13 @@
+import { AuthTokenDAO } from "../DataAccessObjects/AuthTokenDAO";
+import { FeedDAO } from "../DataAccessObjects/FeedDAO";
 import { FollowDAO } from "../DataAccessObjects/FollowDAO"
-import { StatusDAO } from "../DataAccessObjects/StatusDAO";
+import { StoryDAO } from "../DataAccessObjects/StoryDAO";
 import { UserDAO } from "../DataAccessObjects/UserDAO";
 
 export interface DAOFactory {
     getFollowDAO(): FollowDAO,
     getUserDAO(): UserDAO,
-    getStatusDAO(): StatusDAO
+    getAuthTokenDAO(): AuthTokenDAO,
+    getFeedDAO(): FeedDAO,
+    getStoryDAO(): StoryDAO
  }

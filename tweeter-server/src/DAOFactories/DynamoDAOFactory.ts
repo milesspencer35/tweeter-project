@@ -1,8 +1,12 @@
+import { AuthTokenDAO } from "../DataAccessObjects/AuthTokenDAO";
+import { DynamoAuthTokenDAO } from "../DataAccessObjects/DynamoDBDaos/DynamoAuthTokenDAO";
+import { DynamoFeedDAO } from "../DataAccessObjects/DynamoDBDaos/DynamoFeedDAO";
 import { DynamoFollowDAO } from "../DataAccessObjects/DynamoDBDaos/DynamoFollowDAO";
-import { DynamoStatusDAO } from "../DataAccessObjects/DynamoDBDaos/DynamoStatusDAO";
+import { DynamoStoryDAO } from "../DataAccessObjects/DynamoDBDaos/DynamoStoryDAO";
 import { DynamoUserDAO } from "../DataAccessObjects/DynamoDBDaos/DynamoUserDAO";
+import { FeedDAO } from "../DataAccessObjects/FeedDAO";
 import { FollowDAO } from "../DataAccessObjects/FollowDAO";
-import { StatusDAO } from "../DataAccessObjects/StatusDAO";
+import { StoryDAO } from "../DataAccessObjects/StoryDAO";
 import { UserDAO } from "../DataAccessObjects/UserDAO";
 import { DAOFactory } from "./DAOFactory";
 
@@ -13,9 +17,17 @@ export class DynamoDAOFactory implements DAOFactory {
 
     getUserDAO(): UserDAO {
         return new DynamoUserDAO();
+    }  
+    
+    getAuthTokenDAO(): AuthTokenDAO {
+        return new DynamoAuthTokenDAO();
     }
 
-    getStatusDAO(): StatusDAO {
-        return new DynamoStatusDAO();
+    getFeedDAO(): FeedDAO {
+        return new DynamoFeedDAO();
+    }
+
+    getStoryDAO(): StoryDAO {
+        return new DynamoStoryDAO();
     }
 }
