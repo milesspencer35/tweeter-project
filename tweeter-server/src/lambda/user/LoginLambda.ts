@@ -9,7 +9,7 @@ export const handler = async (request: LoginRequest): Promise<EntryResponse> => 
     return {
         success: true,
         message: null,
-        user: user.dto,
+        user: user == null ? null : user.dto,
         authToken: authToken.dto
     };
 }

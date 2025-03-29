@@ -1,6 +1,7 @@
 import { Buffer } from "buffer";
 import { AuthToken, User, FakeData } from "tweeter-shared";
 import { ServerFacade } from "../../network/ServerFacade";
+import bcryptjs from "bcryptjs";
 
 export class UserService {
     private serverFacade = new ServerFacade();
@@ -32,11 +33,14 @@ export class UserService {
         const imageStringBase64: string =
             Buffer.from(userImageBytes).toString("base64");
 
+        const salt = await bcryptjs.genSalt();
+        const hashedPassword = await bcryptjs.hash(password, salt);
+
         const request = {
             firstName: firstName, 
             lastName: lastName,
             alias: alias,
-            password: password,
+            password: hashedPassword,
             userImageString: imageStringBase64,
             imageFileExtension: imageFileExtension
         }

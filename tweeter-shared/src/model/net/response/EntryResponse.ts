@@ -3,6 +3,6 @@ import { UserDto } from "../../dto/UserDto";
 import { TweeterResponse } from "./TweeterResponse";
 
 export interface EntryResponse extends TweeterResponse {
-    user: UserDto,
+    user: UserDto | null,
     authToken: AuthTokenDto
 }

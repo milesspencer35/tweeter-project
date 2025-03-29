@@ -8,6 +8,7 @@ export class DynamoAuthTokenDAO implements AuthTokenDAO {
     private tableName = "auth_token";
     private token_attr = "token_string";
     private timestamp_attr = "timestamp";
+    private expire_attr = "expire_at";
 
     async putAuthToken(authToken: AuthToken): Promise<void> {
         const params = {
@@ -15,6 +16,7 @@ export class DynamoAuthTokenDAO implements AuthTokenDAO {
             Item: {
                 [this.token_attr]: authToken.token,
                 [this.timestamp_attr]: authToken.timestamp,
+                [this.expire_attr]: authToken.timestamp + 14400000 // 4 hours
                 
             },
         };
