@@ -1,7 +1,13 @@
 import { AuthToken, Status, FakeData } from "tweeter-shared";
 import { StatusDto } from "tweeter-shared/dist/model/dto/StatusDto";
+import { TweeterService } from "./TweeterService";
+import { DAOFactory } from "../../DAOFactories/DAOFactory";
 
-export class StatusService {
+export class StatusService extends TweeterService {
+    constructor(daoFactory: DAOFactory) {
+        super(daoFactory);
+    }
+
     public async loadMoreFeedItems(
         token: string,
         userAlias: string,

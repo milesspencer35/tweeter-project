@@ -1,7 +1,13 @@
 import { Buffer } from "buffer";
 import { AuthToken, User, FakeData } from "tweeter-shared";
+import { TweeterService } from "./TweeterService";
+import { DAOFactory } from "../../DAOFactories/DAOFactory";
 
-export class UserService {
+export class UserService extends TweeterService{
+    constructor(daoFactory: DAOFactory) {
+        super(daoFactory);
+    }
+
     public async getUser(
         token: string,
         alias: string
