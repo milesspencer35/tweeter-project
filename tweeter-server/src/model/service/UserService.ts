@@ -9,11 +9,14 @@ export class UserService extends TweeterService {
     }
 
     public async getUser(token: string, alias: string): Promise<User | null> {
-        // check token
-        // return user object
 
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.findUserByAlias(alias);
+        const [user] = await this.userDao.getUser(alias);
+
+        if (!await this.validateToken(token) || user == undefined) {
+            return null;
+        }
+
+        return user;
     }
 
     public async register(
@@ -47,8 +50,6 @@ export class UserService extends TweeterService {
         } catch (error) {
             throw new Error("error registering user: " + error);
         }
-
-        // return await this.entryReturnLogic();
     }
 
     public async login(
@@ -66,14 +67,9 @@ export class UserService extends TweeterService {
             ) {
                 return [
                     null,
-                    AuthToken.fromDto({ token: "error", timestamp: 0 }),
+                    AuthToken.fromDto({ token: "error", timestamp: 0 })
                 ];
             }
-
-            // compare passwords
-            // if (!await bcrypt.compare(password, hashedPassword)) {
-            //     throw new Error("Login password didn't match");
-            // }
 
             const authToken = await AuthToken.Generate();
             await this.authTokenDao.putAuthToken(authToken);
@@ -83,22 +79,10 @@ export class UserService extends TweeterService {
         } catch (error) {
             throw new Error("Error loginning in: " + error);
         }
-
-        // return await this.entryReturnLogic();
-    }
-
-    private async entryReturnLogic(): Promise<[User, AuthToken]> {
-        const user = FakeData.instance.firstUser;
-
-        if (user === null) {
-            throw new Error("Invalid alias or password");
-        }
-
-        return [user, FakeData.instance.authToken];
     }
 
     public async logout(token: string): Promise<void> {
-        // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-        await new Promise((res) => setTimeout(res, 1000));
+
+        await this.authTokenDao.deleteAuthToken(token);
     }
 }

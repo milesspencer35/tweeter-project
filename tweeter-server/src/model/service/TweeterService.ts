@@ -22,4 +22,9 @@ export class TweeterService {
         this.storyDao = daoFactory.getStoryDAO();
         this.s3Dao = daoFactory.getS3DAO();
     }
+
+    protected async validateToken(token: string): Promise<boolean> {
+        const validToken = await this.authTokenDao.checkForAuthToken(token);
+        return validToken;
+    }
 }
