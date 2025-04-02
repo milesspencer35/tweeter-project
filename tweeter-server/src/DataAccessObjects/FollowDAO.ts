@@ -8,5 +8,10 @@ export interface FollowDAO {
         followerHandle: string,
         pageSize: number,
         lastFolloweeHandle: string | undefined
-    ): Promise<[string[], boolean]>
+    ): Promise<[string[], boolean]>;
+    getPageOfFollowers(
+        followeeHandle: string,
+        pageSize: number,
+        lastFollowerHandle: string | undefined
+    ): Promise<[string[], boolean]>;
 }

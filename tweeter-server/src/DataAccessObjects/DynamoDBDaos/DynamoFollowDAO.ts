@@ -68,7 +68,6 @@ export class DynamoFollowDAO implements FollowDAO {
                       },
         };
 
-        // const items: Follows[] = [];
         const followeeAliases: string[] = []; 
         const data = await this.client.send(new QueryCommand(params));
         const hasMorePages = data.LastEvaluatedKey !== undefined;
@@ -78,5 +77,38 @@ export class DynamoFollowDAO implements FollowDAO {
         );
 
         return [followeeAliases, hasMorePages];
+    }
+
+    async getPageOfFollowers(
+        followeeHandle: string,
+        pageSize: number,
+        lastFollowerHandle: string | undefined
+    ): Promise<[string[], boolean]> {
+        const params = {
+            KeyConditionExpression: this.followee_handle_attr + " = :fe",
+            ExpressionAttributeValues: {
+                ":fe": followeeHandle,
+            },
+            TableName: this.tableName,
+            IndexName: this.indexName,
+            Limit: pageSize,
+            ExclusiveStartKey:
+                lastFollowerHandle === undefined
+                    ? undefined
+                    : {
+                          [this.followee_handle_attr]: followeeHandle,
+                          [this.follower_handle_attr]: lastFollowerHandle,
+                      },
+        };
+
+        const followerAliases: string[] = [];
+        const data = await this.client.send(new QueryCommand(params));
+        const hasMorePages = data.LastEvaluatedKey !== undefined;
+
+        data.Items?.forEach((item) =>
+            followerAliases.push(item[this.follower_handle_attr])
+        );
+
+        return [followerAliases, hasMorePages]
     }
 }
