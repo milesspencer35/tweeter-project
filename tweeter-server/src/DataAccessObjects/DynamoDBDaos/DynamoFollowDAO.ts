@@ -1,8 +1,8 @@
 
-import { Follow } from "tweeter-shared";
+
 import { FollowDAO } from "../FollowDAO";
-import { DeleteCommand, DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DeleteCommand, DynamoDBDocumentClient, GetCommand, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBClient} from "@aws-sdk/client-dynamodb";
 
 export class DynamoFollowDAO implements FollowDAO {
     private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
@@ -31,5 +31,52 @@ export class DynamoFollowDAO implements FollowDAO {
             }
         }
         await this.client.send(new DeleteCommand(params));
+    }
+
+    async getFollowsStatus(userAlias: string, selectedUserAlias: string): Promise<boolean> {
+        const params = {
+            TableName: this.tableName,
+            Key: {
+                [this.follower_handle_attr]: userAlias,
+                [this.followee_handle_attr]: selectedUserAlias
+            }
+        }
+
+        const output = await this.client.send(new GetCommand(params));
+
+        return output.Item == undefined ? false: true;
+    }
+
+    async getPageOfFollowees(
+        followerHandle: string,
+        pageSize: number,
+        lastFolloweeHandle: string | undefined
+    ): Promise<[string[], boolean]> {
+        const params = {
+            KeyConditionExpression: this.follower_handle_attr + " = :fr",
+            ExpressionAttributeValues: {
+                ":fr": followerHandle,
+            },
+            TableName: this.tableName,
+            Limit: pageSize,
+            ExclusiveStartKey:
+                lastFolloweeHandle === undefined
+                    ? undefined
+                    : {
+                          [this.follower_handle_attr]: followerHandle,
+                          [this.followee_handle_attr]: lastFolloweeHandle,
+                      },
+        };
+
+        // const items: Follows[] = [];
+        const followeeAliases: string[] = []; 
+        const data = await this.client.send(new QueryCommand(params));
+        const hasMorePages = data.LastEvaluatedKey !== undefined;
+
+        data.Items?.forEach((item) =>
+            followeeAliases.push(item[this.followee_handle_attr])
+        );
+
+        return [followeeAliases, hasMorePages];
     }
 }
