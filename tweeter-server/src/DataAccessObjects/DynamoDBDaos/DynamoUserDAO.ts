@@ -3,7 +3,10 @@ import { UserDAO } from "../UserDAO";
 import {
     DynamoDBDocumentClient,
     GetCommand,
+    GetCommandOutput,
     PutCommand,
+    UpdateCommand,
+    UpdateCommandOutput,
 } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
@@ -15,6 +18,8 @@ export class DynamoUserDAO implements UserDAO {
     private alias_attr = "alias";
     private password_attr = "password";
     private imageURL_attr = "imageURL";
+    private followee_count_attr = "followee_count";
+    private follower_count_attr = "follower_count";
 
     async register(
         firstName: string,
@@ -31,6 +36,8 @@ export class DynamoUserDAO implements UserDAO {
                 [this.alias_attr]: alias,
                 [this.password_attr]: password,
                 [this.imageURL_attr]: imageURL,
+                [this.followee_count_attr]: 0,
+                [this.follower_count_attr]: 0,
             },
         };
         await this.client.send(new PutCommand(params));
@@ -38,20 +45,67 @@ export class DynamoUserDAO implements UserDAO {
         return new User(firstName, lastName, alias, imageURL);
     }
 
-    async getUser(alias: string): Promise<[User | undefined, string | undefined]> {
+    async getUser(
+        alias: string
+    ): Promise<[User | undefined, string | undefined]> {
         const params = {
             TableName: this.tableName,
             Key: { [this.alias_attr]: alias },
         };
 
         const output = await this.client.send(new GetCommand(params));
-        return [output.Item == undefined
-            ? undefined : new User(
-                output.Item[this.firstName_attr],
-                output.Item[this.lastName_attr],
-                output.Item[this.alias_attr],
-                output.Item[this.imageURL_attr]
-            ), 
-            output.Item == undefined ? undefined : output.Item[this.password_attr]];
+        return [
+            output.Item == undefined
+                ? undefined
+                : new User(
+                      output.Item[this.firstName_attr],
+                      output.Item[this.lastName_attr],
+                      output.Item[this.alias_attr],
+                      output.Item[this.imageURL_attr]
+                  ),
+            output.Item == undefined
+                ? undefined
+                : output.Item[this.password_attr],
+        ];
     }
+
+    async getCounts(alias: string): Promise<[number, number]> {
+        const params = {
+            TableName: this.tableName,
+            Key: { [this.alias_attr]: alias },
+        };
+
+        const output = await this.client.send(new GetCommand(params));
+        if (output.Item == undefined) {
+            throw new Error("[Bad Request] trying to get counts");
+        }
+        return [
+            output.Item[this.followee_count_attr],
+            output.Item[this.follower_count_attr],
+        ];
+    }
+
+    async updateCounts(
+        alias: string,
+        updateFolloweeAmount: number,
+        updateFollowerAmount: number
+    ): Promise<[number, number]> {
+        const params = {
+            TableName: this.tableName,
+            Key: { [this.alias_attr]: alias },
+            UpdateExpression: "SET followee_count = followee_count + :eCount, follower_count = follower_count + :rCount",
+            ExpressionAttributeValues: {
+                ":eCount": updateFolloweeAmount,
+                ":rCount": updateFollowerAmount
+            },
+            ReturnValue: "ALL_NEW"
+        };
+        const output = await this.client.send(new UpdateCommand(params));
+
+        if (output.Attributes == undefined) {
+            throw new Error("[Bad Request] error updating counts");
+        }
+        return [output.Attributes.followee_count, output.Attributes.follower_count];
+    }
+
 }
