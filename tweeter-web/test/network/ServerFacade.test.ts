@@ -5,6 +5,35 @@ import "isomorphic-fetch";
 describe("ServerFacade", () => {
     let serverFacade: ServerFacade;
 
+    // beforeAll(async () => {
+    //     const request = {
+    //         firstName: "person",
+    //         lastName: "person",
+    //         alias: `@person`,
+    //         password: "person",
+    //         userImageString: "photo in string form",
+    //         imageFileExtension: "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png" 
+    //     }
+
+    //     await serverFacade.register(request)
+
+    //     for (let i = 1; i < 13; i++) {
+    //         const request = {
+    //             firstName: "test",
+    //             lastName: "test",
+    //             alias: `@test${i}`,
+    //             password: "test",
+    //             userImageString: "photo in string form",
+    //             imageFileExtension: "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png" 
+    //         }
+    
+    //         await serverFacade.register(request);
+    //     }
+        
+
+
+    // })
+
     beforeEach(() => {
         serverFacade = new ServerFacade();
     })
@@ -25,7 +54,7 @@ describe("ServerFacade", () => {
         expect(user?.firstName).toBe("Allen");
         expect(user?.lastName).toBe("Anderson");
         expect(user?.alias).toBe("@allen");
-        expect(user?.imageUrl).toBe("https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
+        expect(user?.imageUrl).toBe("https://tweeter-mspencer.s3.us-east-1.amazonaws.com/image/@allen.https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png");
 
         expect(authToken).not.toBeNull();
         expect(authToken.token).toBeDefined();

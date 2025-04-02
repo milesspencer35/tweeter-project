@@ -23,7 +23,18 @@ export class StatusService extends TweeterService {
         pageSize: number,
         lastItem: StatusDto | null
     ): Promise<[StatusDto[], boolean]> {
-        return this.getFakeData(lastItem, pageSize);
+        // return this.getFakeData(lastItem, pageSize);
+
+        this.validateToken(token);
+
+        const [statusItems, hasMorePages] = await this.storyDao.getPageOfStories(userAlias, pageSize, lastItem?.timestamp);
+        const dtos = this.mapDtos(statusItems);
+
+        return [dtos, hasMorePages];
+    }
+
+    private mapDtos(statusItems: Status[]): StatusDto[] {
+        return statusItems.map((status) => status.dto);
     }
 
     private async getFakeData(lastItem: StatusDto | null, pageSize: number): Promise<[StatusDto[], boolean]> {
@@ -36,9 +47,16 @@ export class StatusService extends TweeterService {
         token: string,
         newStatus: StatusDto
     ): Promise<void> {
-        // Pause so we can see the logging out message. Remove when connected to the server
-        await new Promise((f) => setTimeout(f, 2000));
+        await this.validateToken(token);
 
-        // TODO: Call the server to post the status
+        const status = Status.fromDto(newStatus);
+        if (status == null) {
+            throw new Error("[Bad Request] got status is null");
+        }
+
+        await this.storyDao.putStory(status);
+
+
+        // put it in the feeds it need to go into
     }
 }
