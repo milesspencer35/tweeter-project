@@ -4,12 +4,10 @@ import {
     BatchGetCommand,
     DynamoDBDocumentClient,
     GetCommand,
-    GetCommandOutput,
     PutCommand,
-    UpdateCommand,
-    UpdateCommandOutput,
+    UpdateCommand
 } from "@aws-sdk/lib-dynamodb";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient, ReturnValue } from "@aws-sdk/client-dynamodb";
 
 export class DynamoUserDAO implements UserDAO {
     private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
@@ -100,7 +98,7 @@ export class DynamoUserDAO implements UserDAO {
                 ":eCount": updateFolloweeAmount,
                 ":rCount": updateFollowerAmount,
             },
-            ReturnValue: "ALL_NEW",
+            ReturnValues: ReturnValue.ALL_NEW,
         };
         const output = await this.client.send(new UpdateCommand(params));
 
