@@ -9,11 +9,16 @@ export class UserService extends TweeterService {
     }
 
     public async getUser(token: string, alias: string): Promise<User | null> {
-
-        const [user] = await this.userDao.getUser(alias);
+        let user;
+        try {
+            [user] = await this.userDao.getUser(alias);
+        } catch (error) {
+            throw new Error("[Server Error] error getting User: " + error);
+        }
+        
 
         if (!await this.validateToken(token) || user == undefined) {
-            return null;
+            throw new Error("[Bad Request] error validating token");
         }
 
         return user;
@@ -48,7 +53,7 @@ export class UserService extends TweeterService {
 
             return [user, authToken];
         } catch (error) {
-            throw new Error("error registering user: " + error);
+            throw new Error("[Server Error] error registering user: " + error);
         }
     }
 
@@ -77,12 +82,16 @@ export class UserService extends TweeterService {
             // send user and authtoken
             return [user, authToken];
         } catch (error) {
-            throw new Error("Error loginning in: " + error);
+            throw new Error("[Server Error] error loginning in: " + error);
         }
     }
 
     public async logout(token: string): Promise<void> {
-
-        await this.authTokenDao.deleteAuthToken(token);
+        try {
+            await this.authTokenDao.deleteAuthToken(token);
+        } catch (error) {
+            throw new Error("[Server Error] error logging out: " + error);
+        }
+        
     }
 }
