@@ -55,48 +55,47 @@ export class FollowService extends TweeterService{
         token: string,
         user: UserDto
     ): Promise<number> {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.getFolloweeCount(user.alias);
+        await this.validateToken(token);
+
+        const [followee_count, ] = await this.userDao.getCounts(user.alias);
+        return followee_count;
     }
 
     public async getFollowerCount(
         token: string,
         user: UserDto
     ): Promise<number> {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.getFollowerCount(user.alias);
+        await this.validateToken(token);
+
+        const [, follower_count] = await this.userDao.getCounts(user.alias);
+        return follower_count;
     }
 
     public async follow(
         token: string,
         userToFollow: UserDto
     ): Promise<[followerCount: number, followeeCount: number]> {
-        // Pause so we can see the follow message. Remove when connected to the server
-        await new Promise((f) => setTimeout(f, 2000));
-
-        return await this.getFollowCounts(token, userToFollow);
+        const alias = await this.authTokenDao.getAliasByToken(token);
+        // insert follow relationship
+        await this.followDao.putFollows(alias, userToFollow.alias);
+        // update following count for logged in user
+        await this.userDao.updateCounts(alias, 1, 0);
+        // update and return counts for actioned on user
+        return await this.userDao.updateCounts(userToFollow.alias, 0, 1);
     }
 
     public async unfollow(
         token: string,
         userToUnfollow: UserDto
     ): Promise<[followerCount: number, followeeCount: number]> {
-        // Pause so we can see the unfollow message. Remove when connected to the server
-        await new Promise((f) => setTimeout(f, 2000));
 
-        return await this.getFollowCounts(token, userToUnfollow);
+        const alias = await this.authTokenDao.getAliasByToken(token);
+        // delete the follow relationship
+        await this.followDao.deleteFollows(alias, userToUnfollow.alias);
+        // update following count for logged in user
+        await this.userDao.updateCounts(alias, -1, 0);
+        // update and return counts for actioned on user
+        return await this.userDao.updateCounts(userToUnfollow.alias, 0, -1);
     }
 
-    private async getFollowCounts(token: string, user: UserDto): Promise<[number, number]> {
-        const followerCount = await this.getFollowerCount(
-            token,
-            user
-        );
-        const followeeCount = await this.getFolloweeCount(
-            token,
-            user
-        );
-
-        return [followerCount, followeeCount];
-    }
 }
