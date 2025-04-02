@@ -1,6 +1,7 @@
-import { AuthToken, User } from "tweeter-shared";
+import { AuthToken, User, UserDto } from "tweeter-shared";
 import { UserDAO } from "../UserDAO";
 import {
+    BatchGetCommand,
     DynamoDBDocumentClient,
     GetCommand,
     GetCommandOutput,
@@ -93,19 +94,58 @@ export class DynamoUserDAO implements UserDAO {
         const params = {
             TableName: this.tableName,
             Key: { [this.alias_attr]: alias },
-            UpdateExpression: "SET followee_count = followee_count + :eCount, follower_count = follower_count + :rCount",
+            UpdateExpression:
+                "SET followee_count = followee_count + :eCount, follower_count = follower_count + :rCount",
             ExpressionAttributeValues: {
                 ":eCount": updateFolloweeAmount,
-                ":rCount": updateFollowerAmount
+                ":rCount": updateFollowerAmount,
             },
-            ReturnValue: "ALL_NEW"
+            ReturnValue: "ALL_NEW",
         };
         const output = await this.client.send(new UpdateCommand(params));
 
         if (output.Attributes == undefined) {
             throw new Error("[Bad Request] error updating counts");
         }
-        return [output.Attributes.followee_count, output.Attributes.follower_count];
+        return [
+            output.Attributes.followee_count,
+            output.Attributes.follower_count,
+        ];
     }
 
+    async batchGetUsers(aliases: string[]): Promise<UserDto[]> {
+        if (aliases && aliases.length > 0) {
+            // Deduplicate the names (only necessary if used in cases where there can be duplicates)
+            const namesWithoutDuplicates = [...new Set(aliases)];
+
+            const keys = namesWithoutDuplicates.map<Record<string, {}>>(
+                (alias) => ({
+                    [this.alias_attr]: alias,
+                })
+            );
+
+            const params = {
+                RequestItems: {
+                    [this.tableName]: {
+                        Keys: keys,
+                    },
+                },
+            };
+
+            const result = await this.client.send(new BatchGetCommand(params));
+
+            if (result.Responses) {
+                return result.Responses[this.tableName].map<UserDto>((item) => {
+                    return {
+                        firstName: item[this.firstName_attr],
+                        lastName: item[this.lastName_attr],
+                        alias: item[this.alias_attr],
+                        imageUrl: item[this.imageURL_attr],
+                    };
+                });
+            }
+        }
+
+        return [];
+    }
 }
