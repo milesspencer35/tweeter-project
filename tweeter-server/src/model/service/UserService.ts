@@ -16,9 +16,9 @@ export class UserService extends TweeterService {
             throw new Error("[Server Error] error getting User: " + error);
         }
         
-
-        if (!await this.validateToken(token) || user == undefined) {
-            throw new Error("[Bad Request] error validating token");
+        await this.validateToken(token);
+        if (user == undefined) {
+            throw new Error("[Server Error] error user returned undefined");
         }
 
         return user;
@@ -49,7 +49,7 @@ export class UserService extends TweeterService {
             );
 
             const authToken = await AuthToken.Generate();
-            await this.authTokenDao.putAuthToken(authToken);
+            await this.authTokenDao.putAuthToken(authToken, alias);
 
             return [user, authToken];
         } catch (error) {
@@ -77,7 +77,7 @@ export class UserService extends TweeterService {
             }
 
             const authToken = await AuthToken.Generate();
-            await this.authTokenDao.putAuthToken(authToken);
+            await this.authTokenDao.putAuthToken(authToken, alias);
 
             // send user and authtoken
             return [user, authToken];

@@ -9,14 +9,16 @@ export class DynamoAuthTokenDAO implements AuthTokenDAO {
     private token_attr = "token_string";
     private timestamp_attr = "timestamp";
     private expire_attr = "expire_at";
+    private alias_attr = "alias";
 
-    async putAuthToken(authToken: AuthToken): Promise<void> {
+    async putAuthToken(authToken: AuthToken, alias: string): Promise<void> {
         const params = {
             TableName: this.tableName,
             Item: {
                 [this.token_attr]: authToken.token,
                 [this.timestamp_attr]: authToken.timestamp,
-                [this.expire_attr]: ((authToken.timestamp + 14400000) / 1000) // add 4 hours and conver to epoch time
+                [this.expire_attr]: ((authToken.timestamp + 14400000) / 1000), // add 4 hours and conver to epoch time
+                [this.alias_attr]: alias
             },
         };
         await this.client.send(new PutCommand(params));
@@ -46,6 +48,21 @@ export class DynamoAuthTokenDAO implements AuthTokenDAO {
         };
 
         await this.client.send(new DeleteCommand(params));
+    }
+
+    async getAliasByToken(token: string): Promise<string> {
+        const params = {
+            TableName: this.tableName,
+            Key: { [this.token_attr]: token }
+        };
+
+        const output = await this.client.send(new GetCommand(params));
+
+        if (output.Item == undefined) {
+            throw new Error("[Bad Request] authToken error");
+        }
+
+        return output.Item[this.alias_attr];
     }
 
 }

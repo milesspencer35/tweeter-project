@@ -23,8 +23,11 @@ export class TweeterService {
         this.s3Dao = daoFactory.getS3DAO();
     }
 
-    protected async validateToken(token: string): Promise<boolean> {
+    protected async validateToken(token: string): Promise<void> {
         const validToken = await this.authTokenDao.checkForAuthToken(token);
-        return validToken;
+
+        if (!validToken) {
+            throw new Error("[Bad Request] invalid authtoken");
+        }
     }
 }
