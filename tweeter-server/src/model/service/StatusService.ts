@@ -16,22 +16,27 @@ export class StatusService extends TweeterService {
     ): Promise<[StatusDto[], boolean]> {
         await this.validateToken(token);
 
-        let lastIsoDate_senderAlias;
+        try {
+            let lastIsoDate_senderAlias;
 
-        if (lastItem != null) {
-            const dateObj = new Date(lastItem?.timestamp);
-            lastIsoDate_senderAlias =
-                dateObj.toISOString() + lastItem.user.alias;
+            if (lastItem != null) {
+                const dateObj = new Date(lastItem?.timestamp);
+                lastIsoDate_senderAlias =
+                    dateObj.toISOString() + lastItem.user.alias;
+            }
+
+            const [statusItems, hasMorePages] = await this.feedDao.getPageOfFeed(
+                userAlias,
+                pageSize,
+                lastItem == null ? undefined : lastIsoDate_senderAlias
+            );
+            const dtos = this.mapDtos(statusItems);
+
+            return [dtos, hasMorePages];
+        } catch (error) {
+            throw new Error("[Server Error] loading more feed items: " + error);
         }
-
-        const [statusItems, hasMorePages] = await this.feedDao.getPageOfFeed(
-            userAlias,
-            pageSize,
-            lastItem == null ? undefined : lastIsoDate_senderAlias
-        );
-        const dtos = this.mapDtos(statusItems);
-
-        return [dtos, hasMorePages];
+        
     }
 
     public async loadMoreStoryItems(
@@ -43,15 +48,19 @@ export class StatusService extends TweeterService {
 
         this.validateToken(token);
 
-        const [statusItems, hasMorePages] =
+        try {
+            const [statusItems, hasMorePages] =
             await this.storyDao.getPageOfStories(
                 userAlias,
                 pageSize,
                 lastItem?.timestamp
             );
-        const dtos = this.mapDtos(statusItems);
+            const dtos = this.mapDtos(statusItems);
 
-        return [dtos, hasMorePages];
+            return [dtos, hasMorePages];
+        } catch (error) {
+            throw new Error("[Server Error] loading more story items: " + error);
+        }
     }
 
     private mapDtos(statusItems: Status[]): StatusDto[] {

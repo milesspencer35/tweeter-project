@@ -9,6 +9,8 @@ export class UserService extends TweeterService {
     }
 
     public async getUser(token: string, alias: string): Promise<User | null> {
+        await this.validateToken(token);
+
         let user;
         try {
             [user] = await this.userDao.getUser(alias);
@@ -16,7 +18,6 @@ export class UserService extends TweeterService {
             throw new Error("[Server Error] error getting User: " + error);
         }
         
-        await this.validateToken(token);
         if (user == undefined) {
             throw new Error("[Server Error] error user returned undefined");
         }
