@@ -32,8 +32,6 @@ export class StatusService extends TweeterService {
         const dtos = this.mapDtos(statusItems);
 
         return [dtos, hasMorePages];
-
-        // return this.getFakeData(lastItem, pageSize);
     }
 
     public async loadMoreStoryItems(
@@ -42,7 +40,6 @@ export class StatusService extends TweeterService {
         pageSize: number,
         lastItem: StatusDto | null
     ): Promise<[StatusDto[], boolean]> {
-        // return this.getFakeData(lastItem, pageSize);
 
         this.validateToken(token);
 
@@ -60,18 +57,6 @@ export class StatusService extends TweeterService {
     private mapDtos(statusItems: Status[]): StatusDto[] {
         return statusItems.map((status) => status.dto);
     }
-
-    // private async getFakeData(
-    //     lastItem: StatusDto | null,
-    //     pageSize: number
-    // ): Promise<[StatusDto[], boolean]> {
-    //     const [items, hasMore] = FakeData.instance.getPageOfStatuses(
-    //         Status.fromDto(lastItem),
-    //         pageSize
-    //     );
-    //     const dtos = items.map((status) => status.dto);
-    //     return [dtos, hasMore];
-    // }
 
     public async postStatus(
         token: string,

@@ -16,8 +16,6 @@ export class DynamoFeedDAO implements FeedDAO {
         status: Status
     ): Promise<void> {
         if (followerAliases && followerAliases.length > 0) {
-            // Deduplicate the names (only necessary if used in cases where there can be duplicates)
-            // const namesWithoutDuplicates = [...new Set(aliases)];
             const now: Date = new Date();
 
             for (let i = 0; i < followerAliases.length; i += 25) {
@@ -41,19 +39,6 @@ export class DynamoFeedDAO implements FeedDAO {
     
                 await this.client.send(new BatchWriteCommand(params));
             }
-
-            
-
-            // if (result.Responses) {
-            //     return result.Responses[this.tableName].map<UserDto>((item) => {
-            //         return {
-            //             firstName: item[this.firstName_attr],
-            //             lastName: item[this.lastName_attr],
-            //             alias: item[this.alias_attr],
-            //             imageUrl: item[this.imageURL_attr],
-            //         };
-            //     });
-            // }
         }
     }
 
