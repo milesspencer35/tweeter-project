@@ -106,8 +106,8 @@ export class DynamoUserDAO implements UserDAO {
             throw new Error("[Bad Request] error updating counts");
         }
         return [
-            output.Attributes.followee_count,
             output.Attributes.follower_count,
+            output.Attributes.followee_count,
         ];
     }
 
