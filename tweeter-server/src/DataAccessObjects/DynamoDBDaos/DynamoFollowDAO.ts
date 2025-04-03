@@ -111,4 +111,24 @@ export class DynamoFollowDAO implements FollowDAO {
 
         return [followerAliases, hasMorePages]
     }
+
+    async getFollowerAliases(userAlias: string): Promise<string[]> {
+        const params = {
+            KeyConditionExpression: this.followee_handle_attr + " = :fe",
+            ExpressionAttributeValues: {
+                ":fe": userAlias,
+            },
+            TableName: this.tableName,
+            IndexName: this.indexName
+        };
+
+        const followerAliases: string[] = [];
+        const data = await this.client.send(new QueryCommand(params));
+
+        data.Items?.forEach((item) =>
+            followerAliases.push(item[this.follower_handle_attr])
+        );
+
+        return followerAliases;
+    }
 }

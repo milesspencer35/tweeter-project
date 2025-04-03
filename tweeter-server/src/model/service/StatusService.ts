@@ -14,7 +14,26 @@ export class StatusService extends TweeterService {
         pageSize: number,
         lastItem: StatusDto | null
     ): Promise<[StatusDto[], boolean]> {
-        return this.getFakeData(lastItem, pageSize);
+        await this.validateToken(token);
+
+        let lastIsoDate_senderAlias;
+
+        if (lastItem != null) {
+            const dateObj = new Date(lastItem?.timestamp);
+            lastIsoDate_senderAlias =
+                dateObj.toISOString() + lastItem.user.alias;
+        }
+
+        const [statusItems, hasMorePages] = await this.feedDao.getPageOfFeed(
+            userAlias,
+            pageSize,
+            lastItem == null ? undefined : lastIsoDate_senderAlias
+        );
+        const dtos = this.mapDtos(statusItems);
+
+        return [dtos, hasMorePages];
+
+        // return this.getFakeData(lastItem, pageSize);
     }
 
     public async loadMoreStoryItems(
@@ -27,7 +46,12 @@ export class StatusService extends TweeterService {
 
         this.validateToken(token);
 
-        const [statusItems, hasMorePages] = await this.storyDao.getPageOfStories(userAlias, pageSize, lastItem?.timestamp);
+        const [statusItems, hasMorePages] =
+            await this.storyDao.getPageOfStories(
+                userAlias,
+                pageSize,
+                lastItem?.timestamp
+            );
         const dtos = this.mapDtos(statusItems);
 
         return [dtos, hasMorePages];
@@ -37,11 +61,17 @@ export class StatusService extends TweeterService {
         return statusItems.map((status) => status.dto);
     }
 
-    private async getFakeData(lastItem: StatusDto | null, pageSize: number): Promise<[StatusDto[], boolean]> {
-        const [items, hasMore] = FakeData.instance.getPageOfStatuses(Status.fromDto(lastItem), pageSize);
-        const dtos = items.map((status) => status.dto);
-        return [dtos, hasMore];
-    }
+    // private async getFakeData(
+    //     lastItem: StatusDto | null,
+    //     pageSize: number
+    // ): Promise<[StatusDto[], boolean]> {
+    //     const [items, hasMore] = FakeData.instance.getPageOfStatuses(
+    //         Status.fromDto(lastItem),
+    //         pageSize
+    //     );
+    //     const dtos = items.map((status) => status.dto);
+    //     return [dtos, hasMore];
+    // }
 
     public async postStatus(
         token: string,
@@ -56,7 +86,15 @@ export class StatusService extends TweeterService {
 
         await this.storyDao.putStory(status);
 
-
         // put it in the feeds it need to go into
+        const followerAliases = await this.followDao.getFollowerAliases(
+            newStatus.user.alias
+        );
+
+        await this.feedDao.batchPutFeedItems(
+            followerAliases,
+            status.user.alias,
+            status
+        );
     }
 }

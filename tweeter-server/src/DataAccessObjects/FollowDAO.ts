@@ -14,4 +14,5 @@ export interface FollowDAO {
         pageSize: number,
         lastFollowerHandle: string | undefined
     ): Promise<[string[], boolean]>;
+    getFollowerAliases(userAlias: string): Promise<string[]>;
 }
