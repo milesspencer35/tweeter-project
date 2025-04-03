@@ -61,6 +61,7 @@ export class DynamoFeedDAO implements FeedDAO {
                         [this.receiverAlias_attr]: userHandle,
                         [this.isodate_senderAlias_attr]: lastItemIsodateSenderAlias,
                         },
+            ScanIndexForward: false
         };
 
         const statusItems: Status[] = [];

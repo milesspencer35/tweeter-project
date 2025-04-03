@@ -46,6 +46,7 @@ export class DynamoStoryDAO implements StoryDAO {
 						[this.senderAlias_attr]: userHandle,
                         [this.timestamp_attr]: lastItemTimestamp,
                       },
+            ScanIndexForward: false
         };
 
         const statusItems: Status[] = [];
