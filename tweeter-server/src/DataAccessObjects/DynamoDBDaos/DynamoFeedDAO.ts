@@ -1,14 +1,18 @@
 import { Status } from "tweeter-shared";
 import { FeedDAO } from "../FeedDAO";
-import { BatchWriteCommand, DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
-import { DynamoDBClient} from "@aws-sdk/client-dynamodb";
+import {
+    BatchWriteCommand,
+    DynamoDBDocumentClient,
+    QueryCommand,
+} from "@aws-sdk/lib-dynamodb";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
 export class DynamoFeedDAO implements FeedDAO {
     private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
     private readonly tableName = "feed";
     private readonly receiverAlias_attr = "receiverAlias";
     private readonly isodate_senderAlias_attr = "isodate_senderAlias";
-    private readonly status_attr = "status"
+    private readonly status_attr = "status";
 
     async batchPutFeedItems(
         followerAliases: string[],
@@ -57,11 +61,12 @@ export class DynamoFeedDAO implements FeedDAO {
             ExclusiveStartKey:
                 lastItemIsodateSenderAlias === undefined
                     ? undefined
-                    : {		
-                        [this.receiverAlias_attr]: userHandle,
-                        [this.isodate_senderAlias_attr]: lastItemIsodateSenderAlias,
-                        },
-            ScanIndexForward: false
+                    : {
+                          [this.receiverAlias_attr]: userHandle,
+                          [this.isodate_senderAlias_attr]:
+                              lastItemIsodateSenderAlias,
+                      },
+            ScanIndexForward: false,
         };
 
         const statusItems: Status[] = [];

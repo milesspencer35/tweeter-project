@@ -1,4 +1,4 @@
-import { Status, UpdateFeedRequest } from "tweeter-shared"
+import { Status } from "tweeter-shared"
 import { StatusService } from "../../model/service/StatusService";
 import { DynamoDAOFactory } from "../../DAOFactories/DynamoDAOFactory";
 
@@ -16,5 +16,5 @@ export const handler = async (event: any) => {
         throw new Error("[Bad Request] PostUpdateFeed got a null status");
     }
 
-    await statusService.sendUpdateFollowerMessages(newStatus.user.alias);
+    await statusService.sendUpdateFollowerMessages(newStatus);
 }

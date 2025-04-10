@@ -85,27 +85,21 @@ export class StatusService extends TweeterService {
         await this.storyDao.putStory(status);
 
         await this.sendMessageToQueue("https://sqs.us-east-1.amazonaws.com/062781275972/SQSPostStatusQueue", status.toJson());
-        
-        // put it in the feeds it need to go into
-        // const followerAliases = await this.followDao.getFollowerAliases(
-        //     newStatus.user.alias
-        // );
-
-        // await this.feedDao.batchPutFeedItems(
-        //     followerAliases,
-        //     status.user.alias,
-        //     status
-        // );
     }
 
-    async sendUpdateFollowerMessages(alias: string): Promise<void> {
-        const followerBatches = await this.getSplitOfFollowerAliases(alias);
+    async sendUpdateFollowerMessages(status: Status ): Promise<void> {
+        const followerBatches = await this.getSplitOfFollowerAliases(status.user.alias);
 
-        for (const batch of followerBatches) {
-            await this.sendMessageToQueue("https://sqs.us-east-1.amazonaws.com/062781275972/UpdateFeedQueue", batch.toString());
+        const messages = followerBatches.map((batch) => {
+            return {
+                status: status,
+                batch: batch
+            }
+        })
+
+        for (const message of messages) {
+            await this.sendMessageToQueue("https://sqs.us-east-1.amazonaws.com/062781275972/UpdateFeedQueue", JSON.stringify(message));
         }
-
-        console.log("Done sending batches!!");
     }
 
     private async getSplitOfFollowerAliases(alias: string): Promise<string[][]>{
@@ -116,7 +110,7 @@ export class StatusService extends TweeterService {
         let batchAmount = 0;
         let batchPointer = 0;
         for (let i = 0; i < allFollowers.length; i++) {
-            if (batchAmount > 24) {
+            if (batchAmount > 99) {
                 followerBatches.push([]);
                 batchPointer++;
                 batchAmount = 0;
@@ -145,5 +139,15 @@ export class StatusService extends TweeterService {
         } catch (err) {
             throw err;
         }
+    }
+
+    async batchUpdateFeed(batchOfFollowers: string[], senderAlias: string, status: Status): Promise<void> {
+        
+        await this.feedDao.batchPutFeedItems(
+            batchOfFollowers,
+            senderAlias,
+            status
+        );
+
     }
 }
