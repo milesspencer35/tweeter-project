@@ -135,7 +135,7 @@ export class StatusService extends TweeterService {
             const data = await this.sqsClient.send(
                 new SendMessageCommand(params)
             );
-            console.log("Success, message sent. MessageID:", data.MessageId);
+            // console.log("Success, message sent. MessageID:", data.MessageId);
         } catch (err) {
             throw err;
         }

@@ -8,17 +8,23 @@ export const handler = async (event: any) => {
     let batch: string[] = [];
 
     for (let i = 0; i < event.Records.length; ++i) {
+        const startTimeMillis = new Date().getTime();
+
         const { body } = event.Records[i];
-        console.log(body);
         const bodyObj = JSON.parse(body);
         status = Status.fromJson(JSON.stringify(bodyObj.status));
         batch = bodyObj.batch;
-    }
 
-    if (batch == null || status == null) {
-        throw new Error("[Bad Request] error receiving data in UpdateFeed");
-    }
+        if (batch == null || status == null) {
+            throw new Error("[Bad Request] error receiving data in UpdateFeed");
+        }
+        
+        await statusService.batchUpdateFeed(batch, status.user.alias, status);
 
-    await statusService.batchUpdateFeed(batch, status.user.alias, status);
+        const elapsedTime = new Date().getTime() - startTimeMillis;
+        if (elapsedTime < 1000) {
+            await new Promise<void>((resolve) => setTimeout(resolve, 1000 - elapsedTime));
+        }
+    }
 
 }
