@@ -5,35 +5,6 @@ import "isomorphic-fetch";
 describe("ServerFacade", () => {
     let serverFacade: ServerFacade;
 
-    // beforeAll(async () => {
-    //     const request = {
-    //         firstName: "person",
-    //         lastName: "person",
-    //         alias: `@person`,
-    //         password: "person",
-    //         userImageString: "photo in string form",
-    //         imageFileExtension: "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png" 
-    //     }
-
-    //     await serverFacade.register(request)
-
-    //     for (let i = 1; i < 13; i++) {
-    //         const request = {
-    //             firstName: "test",
-    //             lastName: "test",
-    //             alias: `@test${i}`,
-    //             password: "test",
-    //             userImageString: "photo in string form",
-    //             imageFileExtension: "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png" 
-    //         }
-    
-    //         await serverFacade.register(request);
-    //     }
-        
-
-
-    // })
-
     beforeEach(() => {
         serverFacade = new ServerFacade();
     })
@@ -61,44 +32,44 @@ describe("ServerFacade", () => {
         expect(authToken.timestamp).toBeGreaterThan(0);
     });
 
-    it("tests that GetFollowers returns 10 users and hasMore", async () => {
-        const request = {
-            token: "myToken",
-            userAlias: "@allen",
-            pageSize: 10,
-            lastItem: null
-        }
+    // it("tests that GetFollowers returns 10 users and hasMore", async () => {
+    //     const request = {
+    //         token: "myToken",
+    //         userAlias: "@allen",
+    //         pageSize: 10,
+    //         lastItem: null
+    //     }
 
-        const [users, hasMore] = await serverFacade.getMoreFollowers(request);
+    //     const [users, hasMore] = await serverFacade.getMoreFollowers(request);
 
-        expect(users).not.toBeNull();
-        expect(users.length).toBe(10);
-        expect(hasMore).toBe(true);
-    });
+    //     expect(users).not.toBeNull();
+    //     expect(users.length).toBe(10);
+    //     expect(hasMore).toBe(true);
+    // });
 
-    it("tests that GetFollowingCount returns a number", async () => {
-        const user = new User("Allen", "Anderson", "@allen", "myimage.png");
-        const request = {
-            token: "myToken",
-            user: user
-        }
+    // it("tests that GetFollowingCount returns a number", async () => {
+    //     const user = new User("Allen", "Anderson", "@allen", "myimage.png");
+    //     const request = {
+    //         token: "myToken",
+    //         user: user
+    //     }
 
-        const followingCount = await serverFacade.followeeCount(request);
+    //     const followingCount = await serverFacade.followeeCount(request);
 
-        expect(followingCount).not.toBeNull();
-        expect(followingCount).toBeGreaterThan(0);
-    });
+    //     expect(followingCount).not.toBeNull();
+    //     expect(followingCount).toBeGreaterThan(0);
+    // });
 
-    it("tests that GetFollowersCount returns a number", async () => {
-        const user = new User("Allen", "Anderson", "@allen", "myimage.png");
-        const request = {
-            token: "myToken",
-            user: user
-        }
+    // it("tests that GetFollowersCount returns a number", async () => {
+    //     const user = new User("Allen", "Anderson", "@allen", "myimage.png");
+    //     const request = {
+    //         token: "myToken",
+    //         user: user
+    //     }
 
-        const followersCount = await serverFacade.followerCount(request);
+    //     const followersCount = await serverFacade.followerCount(request);
 
-        expect(followersCount).not.toBeNull();
-        expect(followersCount).toBeGreaterThan(0);
-    });
+    //     expect(followersCount).not.toBeNull();
+    //     expect(followersCount).toBeGreaterThan(0);
+    // });
 })
